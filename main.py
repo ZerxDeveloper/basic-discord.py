@@ -1,5 +1,5 @@
 import discord 
-from discord.ext import commands
+from discord.ext import commands, has_permissions
 
 intents = discord.Intents.all()
 intents.members = True
@@ -18,6 +18,7 @@ async def help(ctx):
 .help = Show List of Commands!!
 .invite = Send Bot Invite!!
 .github = Send my Github :D (You can change all this staff :D)
+.kick = Kick member from Discord Server
  ```""")
  
 @client.command()
@@ -28,4 +29,15 @@ async def invite(ctx):
 async def github(ctx): 
   await ctx.send("https://github.com/ZerxDeveloper/")
 
+@client.command()
+@commands.has_permissions(Administrator=True) # This means What Permissions need member for use this command
+async def kick(ctx, member: discord.Member, *, reason=None):
+    await member.kick(reason=reason)
+    await ctx.send(f"{member} Has been kicked from this server!")
+    
+@error.kick # error message if the member used the command without enough permissions!
+async def mute_error(ctx, error): 
+  if isinstance(error, commands.MissingPermissions):
+    await ctx.send("Sorry, You Don't have Permissions to use this command!")
+  
 client.run("bot token past here")
